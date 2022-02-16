@@ -1,37 +1,68 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-navigation-drawer app width="350">
+      <v-list-item to="/">
+        <v-list-item-content>
+          <v-list-item-title class="text-h6"> Flatterer </v-list-item-title>
+          <v-list-item-subtitle> Make JSON Flatterer </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <v-divider></v-divider>
 
-      <v-spacer></v-spacer>
+      <v-list-item to="about">
+        <v-list-item-content>
+          <v-list-item-title class="subtitle-1"> About </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
+      <v-divider></v-divider>
+
+      <v-list v-model="listItem" dense nav>
+        <v-list-item-group v-model="listItem" v-if="$route.name == 'Home'">
+          <v-list-item dense href="#json-input" value="json-input">
+            JSON Input
+          </v-list-item>
+          <v-list-item dense href="#options" value="options">
+            Options
+          </v-list-item>
+          <v-list-item v-if="sections.error" dense href="#error" value="error"
+            >Error</v-list-item
+          >
+          <v-list-item
+            v-if="sections.error"
+            dense
+            href="#input-data-preview"
+            value="input-data-preview"
+            >Input Data Preview</v-list-item
+          >
+          <v-list-item
+            v-if="sections.tables"
+            dense
+            href="#tables-preview"
+            value="tables-preview"
+            >Tables</v-list-item
+          >
+          <v-list-item
+            v-for="table in sections.tables"
+            dense
+            :key="table"
+            :value="'table-' + table"
+            :href="'#table-' + table"
+            class="body-2 pl-10"
+            style="min-height: 10px"
+            >{{ table }}</v-list-item
+          >
+          <v-list-item
+            v-if="sections.tables"
+            dense
+            href="#download"
+            value="download"
+            >Table Downloads</v-list-item
+          >
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
 
     <v-main>
       <router-view />
@@ -42,9 +73,19 @@
 <script>
 export default {
   name: "App",
-
-  data: () => ({
-    //
-  }),
+  computed: {
+    sections() {
+      return this.$store.state.sections;
+    },
+    listItem: {
+      get() {
+        return this.$store.state.listItem;
+      },
+      set(value) {
+        this.$store.commit("setListItem", value);
+      },
+    },
+  },
+  data: () => ({}),
 };
 </script>
